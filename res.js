@@ -73,7 +73,7 @@ res.prototype = {
   },
   
   browserCheck: function(){
-    /* via kennebec on stackoverlow */
+    var that = this;
 	var tem, 
     M = that.uagent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
@@ -81,11 +81,17 @@ res.prototype = {
         return 'IE '+(tem[1] || '');
     }
     if(M[1] === 'Chrome'){
-        tem = that.uagent.match(/\bOPR\/(\d+)/)
-        if(tem != null) return 'Opera '+tem[1];
+        tem = that.uagent.match(/\bOPR\/(\d+)/);
+        if(tem != null) { 
+          return 'Opera '+tem[1]; 
+        }
     }
-    M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-    if((tem = that.uagent.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
+    
+    M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    
+    if((tem = that.uagent.match(/version\/(\d+)/i)) != null) {
+	    M.splice(1, 1, tem[1]);
+    } 
     return M.join(' ');
   },
     
@@ -151,4 +157,4 @@ res.prototype = {
      };
   }
   
-};  
+}; 

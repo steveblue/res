@@ -31,5 +31,15 @@ if( r.device === 'android' && r.orient === 'landscape' ){
 
 ```
 
+You could also build res.js into your JS architecture and make objects do things based on state change using another plugin like stateful.js.
+
+
+```
+
+ this.state = new Stateful(this, r.state");
+ 
+
+```
+
 
 I welcome anyone to contribute to the project to make Res.js better. Currently the breakpoints are quite rigid and should be made to accept a variety of breakpoints. The next release will allow for dynamic naming of breakpoints and include support for unlimited breakpoints. It may also be wise to refactor osCheck() to behave more like browserCheck().
