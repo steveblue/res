@@ -42,6 +42,7 @@ var res = function(arr){
     this.orient = undefined;
 	this.device = undefined;
 	this.os = undefined;
+	this.width = 0;
     this.init();
 };
 res.prototype = {
@@ -50,9 +51,16 @@ res.prototype = {
   	var that = this;
   	var vp = that.viewports;
   	
+  	if(that.device === 'desktop'){
+	  	that.width = window.innerWidth;
+  	}
+  	else if(that.device !== 'desktop'){
+	  	that.width = screen.width;
+  	}
+  	
     for (var key in vp) {
 	    if (vp.hasOwnProperty(key)) {
-		  if (screen.width >= vp[key][0] && screen.width <= vp[key][1]) {
+		  if (that.width >= vp[key][0] && that.width <= vp[key][1]) {
 		    if (that.state != key) {
 		        that.state = key;
 		    }
