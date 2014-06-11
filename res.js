@@ -40,9 +40,9 @@ var res = function(arr){
     this.state = undefined;
     this.input = undefined;
     this.orient = undefined;
-	this.device = undefined;
-	this.os = undefined;
-	this.width = 0;
+    this.device = undefined;
+    this.os = undefined;
+    this.width = 0;
     this.init();
 };
 res.prototype = {
@@ -55,7 +55,13 @@ res.prototype = {
 	  	that.width = window.innerWidth;
   	}
   	else if(that.device !== 'desktop'){
-	  	that.width = screen.width;
+  	
+  		if(that.orient === 'portrait'){
+	  	 that.width = screen.width;
+	  	}
+	  	else if(that.orient === 'landscape'){
+		 that.width = screen.height; 	
+	  	}
   	}
   	
     for (var key in vp) {
@@ -64,6 +70,7 @@ res.prototype = {
 		    if (that.state != key) {
 		        that.state = key;
 		    }
+		    //console.log(that.state);
 		    return that.state;
 		  }	      	      
 	    }
@@ -143,13 +150,13 @@ res.prototype = {
   
   resize: function() {
      var that = this;
-     that.setState();
      if (window.innerHeight > window.innerWidth) {
        that.orient = 'portrait';
      } 
      else {
        that.orient = 'landscape';
      }
+     that.setState();
   },
   
   init: function() {
