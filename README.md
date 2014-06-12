@@ -36,7 +36,7 @@ You could also build res.js into your JS architecture and make objects do things
 
 ```
 
- this.state = new Stateful(this, r.state");
+ this.state = new Stateful(this, r.state);
  
 
 ```
