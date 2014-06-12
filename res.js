@@ -161,7 +161,6 @@ res.prototype = {
   
   init: function() {
      var that = this;
-     that.resize();
      that.osCheck();
      that.inputCheck();
      window.onorientationchange = function() {
@@ -170,6 +169,7 @@ res.prototype = {
      window.onresize = function() {
        that.resize();
      };
+     that.resize();
   }
   
 }; 
