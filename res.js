@@ -40,9 +40,11 @@ var res = function(arr){
     this.state = undefined;
     this.input = undefined;
     this.orient = undefined;
-    this.device = undefined;
-    this.os = undefined;
-    this.width = 0;
+	this.device = undefined;
+	this.os = undefined;
+	this.browser = undefined;
+	this.version = undefined;
+	this.width = 0;
     this.init();
 };
 res.prototype = {
@@ -107,6 +109,8 @@ res.prototype = {
     if((tem = that.uagent.match(/version\/(\d+)/i)) != null) {
 	    M.splice(1, 1, tem[1]);
     } 
+    that.browser = M[0];
+    that.version = M[1];
     return M.join(' ');
   },
     
@@ -161,8 +165,11 @@ res.prototype = {
   
   init: function() {
      var that = this;
+     
      that.osCheck();
      that.inputCheck();
+     that.browserCheck();
+     
      window.onorientationchange = function() {
        that.resize();
      };
