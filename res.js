@@ -124,6 +124,20 @@ res.prototype = {
        that.os = 'osx';
        that.device = 'desktop';
      }
+     else if (navigator.userAgent.indexOf("Android") > -1) {
+       that.os = 'android';
+       if (navigator.userAgent.indexOf("Mobile") > -1) {
+	       that.device = 'mobile';
+       }
+       else{
+	       that.device = 'tablet'; 
+       }
+      
+     }
+     else if (navigator.userAgent.indexOf("windows phone") > 0) {
+       that.os = 'windows';
+       that.device = 'mobile';
+     } 
      else if (navigator.appVersion.indexOf("X11")!=-1) {
        that.os = 'unix';
        that.device = 'desktop';
@@ -143,13 +157,7 @@ res.prototype = {
 	   if( that.uagent.indexOf("ipad") > 0 ){
 	       that.device = "ipad";
 	   }  
-     }
-     else if (navigator.userAgent.indexOf("android") > 0) {
-       that.os = that.device = 'android';
-     }
-     else if (navigator.userAgent.indexOf("windows phone") > 0) {
-       that.os = that.device = 'winphone';
-     }     
+     }   
   },
   
   resize: function() {
