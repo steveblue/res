@@ -23,9 +23,9 @@ Once instantiated as an object, you can do things based on device type, input, o
 
 ```
 
-if( r.device === 'android' && r.orient === 'landscape' ){
+if( r.os === 'android' && r.device === 'tablet' && r.orient === 'landscape' ){
 	
-	// do something here
+	// do something here for android tablets in landscape mode
 
 }
 
