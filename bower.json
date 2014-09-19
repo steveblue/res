@@ -1,5 +1,11 @@
 {
   "name": "resjs",
-  "main": ["res.js","res.min.js"],
+  "main": [
+    "res.js",
+    "res.min.js"
+  ],
+  "ignore": [
+    "index.html"
+  ],
   "version": "1.1"
 }
