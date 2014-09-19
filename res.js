@@ -1,5 +1,5 @@
 /* 
-   res.js v1.0
+   res.js v1.1
    
    Author: Steve Belovarich
    
@@ -40,11 +40,21 @@ var res = function(arr){
     this.state = undefined;
     this.input = undefined;
     this.orient = undefined;
-	this.device = undefined;
-	this.os = undefined;
-	this.browser = undefined;
-	this.version = undefined;
-	this.width = 0;
+	  this.device = undefined;
+	  this.os = undefined;
+	  this.browser = undefined;
+	  this.version = undefined;
+	  this.width = 0;
+	  this.stateChange = new CustomEvent(
+    	"stateChange", 
+    	{
+    		detail: {
+    			time: new Date(),
+    		},
+    		bubbles: false,
+    		cancelable: true
+    	}
+    );
     this.init();
 };
 res.prototype = {
@@ -59,10 +69,10 @@ res.prototype = {
   	else if(that.device !== 'desktop'){
   	
   		if(that.orient === 'portrait'){
-	  	 that.width = screen.width;
+	  	  that.width = screen.width;
 	  	}
 	  	else if(that.orient === 'landscape'){
-		 that.width = screen.height; 	
+		    that.width = screen.height; 	
 	  	}
   	}
   	
@@ -73,10 +83,11 @@ res.prototype = {
 		        that.state = key;
 		    }
 		    //console.log(that.state);
+		    window.dispatchEvent(that.stateChange);
 		    return that.state;
 		  }	      	      
 	    }
-	}
+	  }
   },
   
   inputCheck: function() {
@@ -184,6 +195,7 @@ res.prototype = {
      window.onresize = function() {
        that.resize();
      };
+     
      that.resize();
   }
   
