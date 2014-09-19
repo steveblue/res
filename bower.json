@@ -1,0 +1,5 @@
+{
+  "name": "resjs",
+  "main": ["res.js","res.min.js"],
+  "version": "1.1"
+}
