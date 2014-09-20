@@ -99,7 +99,15 @@ In your app, you can listen for the "stateChange" event on the window and respos
 
 window.addEventListener('stateChange',function(ev){
 
-
+if(r.state === 'portrait'){
+  that.width = r.grid.colSpan[4];
+  that.x = r.grid.col[8];
+}
+  
+if(r.state === 'tablet'){
+  that.width = r.grid.colSpan[6];
+  that.x = r.grid.col[6];
+}
 
 });
 
