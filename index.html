@@ -3,7 +3,61 @@
 <body>
 <script src="res.js"></script>
 <script>
-var r = new res([320,480,768,1024,1440]);
+var r = new res([{
+                     "state": "portrait",
+                     "breakpoint": 420,
+                     "cols": 4,
+                     "margin": 10,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "landscape",
+                     "breakpoint": 640,
+                     "cols": 4,
+                     "margin": 10,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "tablet",
+                     "breakpoint": 768,
+                     "cols": 12,
+                     "margin": 40,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "small",
+                     "breakpoint": 1024,
+                     "cols": 12,
+                     "margin": 40,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "medium",
+                     "breakpoint": 1440,
+                     "cols": 16,
+                     "margin": 80,
+                     "gutter": 20
+                 },
+                 {
+                     "state": "large",
+                     "breakpoint": 1920,
+                     "cols": 16,
+                     "margin": 80,
+                     "gutter": 20
+                 },
+                 {
+                     "state": "retina",
+                     "breakpoint": 3840,
+                     "cols": 16,
+                     "margin": 160,
+                     "gutter": 40
+                 }]);
+                 
+                 window.addEventListener('stateChange',function(ev,i){
+
+                    console.log(r.state); // get the state from the object you created
+                    
+                 });
 </script>
 </body>
 </html>
