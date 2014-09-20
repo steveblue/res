@@ -1,5 +1,5 @@
 /* 
-   res.js v1.1
+   res.js v1.25
    
    Author: Steve Belovarich
    
@@ -24,18 +24,38 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    THE SOFTWARE.
    
-   Usage: var r = new res([320,480,768,1024,1440]);
+   Usage: var r = new res([{
+                     "state": "portrait",
+                     "breakpoint": 420,
+                     "cols": 4,
+                     "margin": 10,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "landscape",
+                     "breakpoint": 640,
+                     "cols": 4,
+                     "margin": 10,
+                     "gutter": 10
+                 },
+                 {
+                     "state": "tablet",
+                     "breakpoint": 768,
+                     "cols": 12,
+                     "margin": 40,
+                     "gutter": 10
+                 }]);
+                 
+                 window.addEventListener('stateChange',function(ev,i){
+
+                    console.log(r.state); // get the state from the object you created
+                    
+                 });              
    
 */   
-var res = function(arr){
-    this.viewports = {
-    'portrait': [0, arr[0]],
-    'landscape': [arr[0]+1, arr[1]],
-    'tablet': [arr[1]+1, arr[2]],
-    'small': [arr[2]+1, arr[3]],
-    'medium': [arr[3]+1, arr[4]],
-    'large': [arr[4]+1, 10000]
-    };
+var res = function(json){
+    
+    var that = this;
     this.uagent = navigator.userAgent.toLowerCase();
     this.state = undefined;
     this.input = undefined;
@@ -45,29 +65,31 @@ var res = function(arr){
 	  this.browser = undefined;
 	  this.version = undefined;
 	  this.width = 0;
-	  this.stateChange = new CustomEvent(
-    	"stateChange", 
-    	{
-    		detail: {
-    			time: new Date(),
-    		},
-    		bubbles: false,
-    		cancelable: true
-    	}
-    );
+	  this.grid = {};
+    this.viewports = {};	
+    this.gridsettings = {}; 
+
+	  var lastBreakpoint = 0;
+
+	  for(var i = 0; i < json.length; i++) {
+      that.viewports[json[i].state] = [lastBreakpoint+1, json[i].breakpoint];
+      if(json[i].cols !== undefined && json[i].margin !== undefined && json[i].gutter !== undefined){
+        that.gridsettings[json[i].state] = [json[i].cols, json[i].margin, json[i].gutter ];
+      }
+      lastBreakpoint = json[i].breakpoint;
+    };
+    	
     this.init();
 };
 res.prototype = {
   
   setState: function() {
   	var that = this;
-  	var vp = that.viewports;
   	
   	if(that.device === 'desktop'){
 	  	that.width = window.innerWidth;
   	}
   	else if(that.device !== 'desktop'){
-  	
   		if(that.orient === 'portrait'){
 	  	  that.width = screen.width;
 	  	}
@@ -76,20 +98,18 @@ res.prototype = {
 	  	}
   	}
   	
-    for (var key in vp) {
-	    if (vp.hasOwnProperty(key)) {
-		  if (that.width >= vp[key][0] && that.width <= vp[key][1]) {
+    for (var key in that.viewports) {
+	    if (that.viewports.hasOwnProperty(key)) {
+		  if (that.width >= that.viewports[key][0] && that.width <= that.viewports[key][1]) {
 		    if (that.state != key) {
 		        that.state = key;
+            return that.state;
 		    }
-		    //console.log(that.state);
-		    window.dispatchEvent(that.stateChange);
-		    return that.state;
 		  }	      	      
 	    }
 	  }
   },
-  
+
   inputCheck: function() {
   	 var that = this;
      if (that.os === 'ios' || that.os === 'android' || that.os === 'winphone') {
@@ -102,7 +122,7 @@ res.prototype = {
   
   browserCheck: function(){
     var that = this;
-	var tem, 
+	  var tem, 
     M = that.uagent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
         tem =  /\brv[ :]+(\d+)/g.exec(that.uagent) || [];
@@ -171,15 +191,78 @@ res.prototype = {
      }   
   },
   
+  gridHelper: function(key){
+  
+    var that = this;
+    
+    var col, 
+        colArr = [],
+        colSpan,
+        colSpanArr = [],
+        margin,
+        gutter,
+        cols;
+
+    cols = that.gridsettings[key][0];
+    margin = that.gridsettings[key][1];
+    gutter = that.gridsettings[key][2]; 
+       	     
+    col = [];
+    colSpan = [];
+    width = window.innerWidth - (margin*2);
+    columnWidth = (width/cols)-gutter; 
+    // console.log(scope.grid.width,scope.grid.columnWidth);
+    for(var i = 0; i<cols; i++){
+      if(i===0){
+         col = ((width/cols)*i)+margin;
+         colSpan = 0;                     
+      }
+      else{
+         col = ((width/cols)*i)+gutter+margin;
+         colSpan = (columnWidth*i)+(gutter*(i-1));
+      }
+      colArr.push(col);
+      colSpanArr.push(colSpan);
+      
+      if(i===this.cols-1){
+        this.colSpan.push(this.width);  
+      }
+    }
+    return {
+            "cols"   : cols,
+            "col"    : colArr,
+            "colSpan": colSpanArr,
+            "width"  : width,
+            "margin" : margin,
+            "gutter" : gutter
+           };
+
+  },
+    
   resize: function() {
      var that = this;
+     
      if (window.innerHeight > window.innerWidth) {
        that.orient = 'portrait';
      } 
      else {
        that.orient = 'landscape';
      }
+     
      that.setState();
+     
+     if (that.gridsettings.hasOwnProperty(that.state)) {
+       that.grid = that.gridHelper(that.state);
+     }
+     
+     that.stateChange = new CustomEvent("stateChange",{
+	  	bubbles: false,
+	  	cancelable: true
+	   });
+	   
+     window.dispatchEvent(that.stateChange);
+     
+     return that;
   },
   
   init: function() {
@@ -192,6 +275,7 @@ res.prototype = {
      window.onorientationchange = function() {
        that.resize();
      };
+     
      window.onresize = function() {
        that.resize();
      };
