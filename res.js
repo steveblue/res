@@ -1,5 +1,5 @@
 /* 
-   res.js v1.25
+   res.js v1.25.1
    
    Author: Steve Belovarich
    
@@ -209,23 +209,23 @@ res.prototype = {
        	     
     col = [];
     colSpan = [];
-    width = window.innerWidth - (margin*2);
+    width = window.innerWidth - (margin*2) + gutter;
     columnWidth = (width/cols)-gutter; 
-    // console.log(scope.grid.width,scope.grid.columnWidth);
+
     for(var i = 0; i<cols; i++){
       if(i===0){
-         col = ((width/cols)*i)+margin;
-         colSpan = 0;                     
+        colSpan = 0;                     
       }
       else{
-         col = ((width/cols)*i)+gutter+margin;
-         colSpan = (columnWidth*i)+(gutter*(i-1));
+        colSpan = (columnWidth*i)+(gutter*(i-1));
       }
+      col = ((width/cols)*i)+margin;
       colArr.push(col);
       colSpanArr.push(colSpan);
       
-      if(i===this.cols-1){
-        this.colSpan.push(this.width);  
+      if(i===cols-1){
+        colSpan = (columnWidth*(i+1))+(gutter*(i))
+        colSpanArr.push(colSpan);  
       }
     }
     return {
