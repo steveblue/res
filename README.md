@@ -1,4 +1,5 @@
-#res.js
+
+![res.js](https://raw.githubusercontent.com/steveblue/res/master/res-logo.png)
 
 
 Res.js is a swiss army knife for responsive sites.
