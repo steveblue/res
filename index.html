@@ -1,4 +1,4 @@
-<!DOCTYPE> 
+<!DOCTYPE>
 <html>
 <body>
 <style>
@@ -55,34 +55,34 @@ window.addEventListener('stateChange',function(ev){
     $('.box:eq(2)').text('os: '+r.os);
     $('.box:eq(3)').text('columns: '+r.grid.cols);
     switch(r.state) {
-      
+
     case 'mobile':
       $('.box').each(function(){
         $(this).css('width',r.grid.colSpan[4]);
         $(this).css('top',80*$(this).index()+'px');
-        $(this).css('left',r.grid.col[0]); 
+        $(this).css('left',r.grid.col[0]);
       });
       break;
     case 'small':
-      $('.box').css('top','0px'); 
+      $('.box').css('top','0px');
       $('.box').css('width',r.grid.colSpan[6]);
       $('.box:eq(0)').css('left',r.grid.col[0]);
       $('.box:eq(1)').css('left',r.grid.col[6]);
       $('.box:eq(2)').css('top',$('.box:eq(0)').height()+20);
-      $('.box:eq(2)').css('left',r.grid.col[0]); 
-      $('.box:eq(3)').css('top',$('.box:eq(0)').height()+20); 
-      $('.box:eq(3)').css('left',r.grid.col[6]);  
+      $('.box:eq(2)').css('left',r.grid.col[0]);
+      $('.box:eq(3)').css('top',$('.box:eq(0)').height()+20);
+      $('.box:eq(3)').css('left',r.grid.col[6]);
       break;
-    case 'desktop':       
+    case 'desktop':
       $('.box').css('width',r.grid.colSpan[4]);
-      $('.box').css('top','0px');                       
+      $('.box').css('top','0px');
       $('.box:eq(0)').css('left',r.grid.col[0]);
-      $('.box:eq(1)').css('left',r.grid.col[4]);  
-      $('.box:eq(2)').css('left',r.grid.col[8]); 
-      $('.box:eq(3)').css('left',r.grid.col[12]); 
-      break;      
-    }  
-});  
+      $('.box:eq(1)').css('left',r.grid.col[4]);
+      $('.box:eq(2)').css('left',r.grid.col[8]);
+      $('.box:eq(3)').css('left',r.grid.col[12]);
+      break;
+    }
+});
 </script>
 
 <ul>
