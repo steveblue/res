@@ -159,7 +159,7 @@ res.prototype = {
   },
 
   osCheck: function() {
-  	 var that = this;
+     var that = this;
      if (navigator.appVersion.indexOf("Win")!=-1) {
        that.os = 'windows';
        that.device = 'desktop';
@@ -190,7 +190,7 @@ res.prototype = {
        that.os = 'linux';
        that.device = 'desktop';
      }
-     else if (navigator.userAgent.match(/(iPhone|iPod|iPad)/).length > 0) {
+     else if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) !== null && navigator.userAgent.match(/(iPhone|iPod|iPad)/).length > 0) {
        that.os = 'ios';
        if( that.uagent.indexOf("iphone") > 0 ){
 	       that.device = "iphone";
@@ -201,6 +201,9 @@ res.prototype = {
 	   if( that.uagent.indexOf("ipad") > 0 ){
 	       that.device = "ipad";
 	   }
+     }
+     else{
+      that.os = 'unknown';
      }
   },
 
