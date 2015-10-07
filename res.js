@@ -1,5 +1,5 @@
 /*
-   res.js v1.25.2
+   res.js v1.3
 
    Author: Steve Belovarich
 
@@ -55,103 +55,115 @@
 */
 
 //Polyfill for CustomEvent in IE9+
-(function () {
-  function CustomEvent ( event, params ) {
-    params = params || { bubbles: false, cancelable: false, detail: undefined };
-    var evt = document.createEvent( 'CustomEvent' );
-    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+(function() {
+  function CustomEvent(event, params) {
+    params = params || {
+      bubbles: false,
+      cancelable: false,
+      detail: undefined
+    };
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
     return evt;
-   };
+  };
   CustomEvent.prototype = window.Event.prototype;
   window.CustomEvent = CustomEvent;
 })();
 
-var res = function(json){
+var res = function(json) {
 
-    var that = this;
-    this.uagent = navigator.userAgent.toLowerCase();
-    this.state = undefined;
-    this.input = undefined;
-    this.orient = undefined;
-	  this.device = undefined;
-	  this.os = undefined;
-	  this.browser = undefined;
-	  this.version = undefined;
-	  this.width = 0;
-	  this.grid = {};
-    this.viewports = {};
-    this.gridsettings = {};
+  var that = this;
+  this.uagent = navigator.userAgent.toLowerCase();
+  this.state = undefined;
+  this.input = undefined;
+  this.orient = undefined;
+  this.device = undefined;
+  this.os = undefined;
+  this.browser = undefined;
+  this.version = undefined;
+  this.width = 0;
+  this.grid = {};
+  this.viewports = {};
+  this.gridsettings = {};
 
-	  var lastBreakpoint = 0;
+  var lastBreakpoint = 0;
 
-	  for(var i = 0; i < json.length; i++) {
-      that.viewports[json[i].state] = [lastBreakpoint+1, json[i].breakpoint];
-      if(json[i].cols !== undefined && json[i].margin !== undefined && json[i].gutter !== undefined){
-        that.gridsettings[json[i].state] = [json[i].cols, json[i].margin, json[i].gutter ];
-      }
-      lastBreakpoint = json[i].breakpoint;
-    };
+  for (var i = 0; i < json.length; i++) {
+    that.viewports[json[i].state] = [lastBreakpoint + 1, json[i].breakpoint];
+    if (json[i].cols !== undefined && json[i].margin !== undefined && json[i].gutter !== undefined) {
+      that.gridsettings[json[i].state] = [json[i].cols, json[i].margin, json[i].gutter];
+    }
+    lastBreakpoint = json[i].breakpoint;
+  };
 
-    this.init();
+  this.init();
 };
 res.prototype = {
 
   setState: function() {
-  	var that = this;
+    var that = this;
 
-  	if(that.device === 'desktop'){
-	  	that.width = window.innerWidth;
-  	}
-  	else if(that.device !== 'desktop'){
-  		if(that.orient === 'portrait'){
-	  	  that.width = screen.width;
-	  	}
-	  	else if(that.orient === 'landscape'){
-		    that.width = screen.height;
-	  	}
-  	}
+    if (that.device === 'desktop') {
+      that.width = window.innerWidth;
+    } else if (that.device !== 'desktop') {
+      if (that.orient === 'portrait') {
+        that.width = screen.width;
+      } else if (that.orient === 'landscape') {
+        that.width = screen.height;
+      }
+    }
 
     for (var key in that.viewports) {
-	    if (that.viewports.hasOwnProperty(key)) {
-		  if (that.width >= that.viewports[key][0] && that.width <= that.viewports[key][1]) {
-		    if (that.state != key) {
-		        that.state = key;
+      if (that.viewports.hasOwnProperty(key)) {
+        if (that.width >= that.viewports[key][0] && that.width <= that.viewports[key][1]) {
+          if (that.state != key) {
+            that.state = key;
             return that.state;
-		    }
-		  }
-	    }
-	  }
+          }
+        }
+      }
+    }
   },
 
   inputCheck: function() {
-  	 var that = this;
-     if (that.os === 'ios' || that.os === 'android' || that.os === 'winphone') {
-       that.input = 'touch';
-     }
-     else{
-	   that.input = 'mouse';
-     }
+    var that = this;
+    if (that.os === 'ios' || that.os === 'android' || that.os === 'winphone') {
+      that.input = 'touch';
+    } else {
+      that.input = 'mouse';
+    }
   },
 
-  browserCheck: function(){
+  browserCheck: function() {
     var that = this;
-	  var tem,
-    M = that.uagent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-    if(/trident/i.test(M[1])){
-        tem =  /\brv[ :]+(\d+)/g.exec(that.uagent) || [];
-        return 'IE '+(tem[1] || '');
+    var tem,
+      M = that.uagent.match(/(edge|opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+    if (that.uagent.match(/(edge(?=\/))\/?\s*(\d+)/i)) {
+      M = that.uagent.match(/(edge(?=\/))\/?\s*(\d+)/i);
+      that.browser = 'edge';
+      that.version = M[2];
+      return 'Edge ' + (M[2] || '');
     }
-    if(M[1] === 'Chrome'){
-        tem = that.uagent.match(/\bOPR\/(\d+)/);
-        if(tem != null) {
-          return 'Opera '+tem[1];
-        }
+    if (/trident/i.test(M[1])) {
+      tem = /\brv[ :]+(\d+)/g.exec(that.uagent) || [];
+      that.browser = 'msie';
+      that.version = tem[1];
+      return 'IE ' + (tem[1] || '');
+    }
+    if (M[1] === 'Chrome') {
+      tem = that.uagent.match(/\bOPR\/(\d+)/);
+      if (tem != null) {
+        that.browser = 'opera';
+        that.version = tem[1];
+        return 'Opera ' + tem[1];
+      }
     }
 
-    M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
 
-    if((tem = that.uagent.match(/version\/(\d+)/i)) != null) {
-	    M.splice(1, 1, tem[1]);
+    if ((tem = that.uagent.match(/version\/(\d+)/i)) != null) {
+      M.splice(1, 1, tem[1]);
     }
     that.browser = M[0];
     that.version = M[1];
@@ -159,65 +171,57 @@ res.prototype = {
   },
 
   osCheck: function() {
-     var that = this;
-     if (navigator.appVersion.indexOf("Win")!=-1) {
-       that.os = 'windows';
-       that.device = 'desktop';
-     }
-     else if (navigator.appVersion.indexOf("Mac")!=-1 && navigator.userAgent.match(/(iPhone|iPod|iPad)/) == null) {
-       that.os = 'osx';
-       that.device = 'desktop';
-     }
-     else if (navigator.userAgent.indexOf("Android") > -1) {
-       that.os = 'android';
-       if (navigator.userAgent.indexOf("Mobile") > -1) {
-	       that.device = 'mobile';
-       }
-       else{
-	       that.device = 'tablet';
-       }
+    var that = this;
+    if (navigator.appVersion.indexOf("Win") != -1) {
+      that.os = 'windows';
+      that.device = 'desktop';
+    } else if (navigator.appVersion.indexOf("Mac") != -1 && navigator.userAgent.match(/(iPhone|iPod|iPad)/) == null) {
+      that.os = 'osx';
+      that.device = 'desktop';
+    } else if (navigator.userAgent.indexOf("Android") > -1) {
+      that.os = 'android';
+      if (navigator.userAgent.indexOf("Mobile") > -1) {
+        that.device = 'mobile';
+      } else {
+        that.device = 'tablet';
+      }
 
-     }
-     else if (navigator.userAgent.indexOf("windows phone") > 0) {
-       that.os = 'windows';
-       that.device = 'mobile';
-     }
-     else if (navigator.appVersion.indexOf("X11")!=-1) {
-       that.os = 'unix';
-       that.device = 'desktop';
-     }
-     else if (navigator.appVersion.indexOf("Linux")!=-1) {
-       that.os = 'linux';
-       that.device = 'desktop';
-     }
-     else if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) !== null && navigator.userAgent.match(/(iPhone|iPod|iPad)/).length > 0) {
-       that.os = 'ios';
-       if( that.uagent.indexOf("iphone") > 0 ){
-	       that.device = "iphone";
-       }
-	   if( that.uagent.indexOf("ipod") > 0 ){
-	       that.device = "ipod";
-	   }
-	   if( that.uagent.indexOf("ipad") > 0 ){
-	       that.device = "ipad";
-	   }
-     }
-     else{
+    } else if (navigator.userAgent.indexOf("windows phone") > 0) {
+      that.os = 'windows';
+      that.device = 'mobile';
+    } else if (navigator.appVersion.indexOf("X11") != -1) {
+      that.os = 'unix';
+      that.device = 'desktop';
+    } else if (navigator.appVersion.indexOf("Linux") != -1) {
+      that.os = 'linux';
+      that.device = 'desktop';
+    } else if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) !== null && navigator.userAgent.match(/(iPhone|iPod|iPad)/).length > 0) {
+      that.os = 'ios';
+      if (that.uagent.indexOf("iphone") > 0) {
+        that.device = "iphone";
+      }
+      if (that.uagent.indexOf("ipod") > 0) {
+        that.device = "ipod";
+      }
+      if (that.uagent.indexOf("ipad") > 0) {
+        that.device = "ipad";
+      }
+    } else {
       that.os = 'unknown';
-     }
+    }
   },
 
-  gridHelper: function(key){
+  gridHelper: function(key) {
 
     var that = this;
 
     var col,
-        colArr = [],
-        colSpan,
-        colSpanArr = [],
-        margin,
-        gutter,
-        cols;
+      colArr = [],
+      colSpan,
+      colSpanArr = [],
+      margin,
+      gutter,
+      cols;
 
     cols = that.gridsettings[key][0];
     margin = that.gridsettings[key][1];
@@ -225,78 +229,76 @@ res.prototype = {
 
     col = [];
     colSpan = [];
-    width = window.innerWidth - (margin*2) + gutter;
-    columnWidth = (width/cols)-gutter;
+    width = window.innerWidth - (margin * 2) + gutter;
+    columnWidth = (width / cols) - gutter;
 
-    for(var i = 0; i<cols; i++){
-      if(i===0){
+    for (var i = 0; i < cols; i++) {
+      if (i === 0) {
         colSpan = 0;
+      } else {
+        colSpan = (columnWidth * i) + (gutter * (i - 1));
       }
-      else{
-        colSpan = (columnWidth*i)+(gutter*(i-1));
-      }
-      col = ((width/cols)*i)+margin;
+      col = ((width / cols) * i) + margin;
       colArr.push(col);
       colSpanArr.push(colSpan);
 
-      if(i===cols-1){
-        colSpan = (columnWidth*(i+1))+(gutter*(i))
+      if (i === cols - 1) {
+        colSpan = (columnWidth * (i + 1)) + (gutter * (i))
         colSpanArr.push(colSpan);
       }
     }
     return {
-            "cols"   : cols,
-            "col"    : colArr,
-            "colSpan": colSpanArr,
-            "width"  : width,
-            "margin" : margin,
-            "gutter" : gutter
-           };
+      "cols": cols,
+      "col": colArr,
+      "colSpan": colSpanArr,
+      "width": width,
+      "margin": margin,
+      "gutter": gutter
+    };
 
   },
 
   resize: function() {
-     var that = this;
+    var that = this;
 
-     if (window.innerHeight > window.innerWidth) {
-       that.orient = 'portrait';
-     }
-     else {
-       that.orient = 'landscape';
-     }
+    if (window.innerHeight > window.innerWidth) {
+      that.orient = 'portrait';
+    } else {
+      that.orient = 'landscape';
+    }
 
-     that.setState();
+    that.setState();
 
-     if (that.gridsettings.hasOwnProperty(that.state)) {
-       that.grid = that.gridHelper(that.state);
-     }
+    if (that.gridsettings.hasOwnProperty(that.state)) {
+      that.grid = that.gridHelper(that.state);
+    }
 
-     that.stateChange = new CustomEvent("stateChange",{
-	  	bubbles: false,
-	  	cancelable: true
-	   });
+    that.stateChange = new CustomEvent("stateChange", {
+      bubbles: false,
+      cancelable: true
+    });
 
-     window.dispatchEvent(that.stateChange);
+    window.dispatchEvent(that.stateChange);
 
-     return that;
+    return that;
   },
 
   init: function() {
-     var that = this;
+    var that = this;
 
-     that.osCheck();
-     that.inputCheck();
-     that.browserCheck();
+    that.osCheck();
+    that.inputCheck();
+    that.browserCheck();
 
-     window.onorientationchange = function() {
-       that.resize();
-     };
+    window.onorientationchange = function() {
+      that.resize();
+    };
 
-     window.onresize = function() {
-       that.resize();
-     };
+    window.onresize = function() {
+      that.resize();
+    };
 
-     that.resize();
+    that.resize();
   }
 
 };

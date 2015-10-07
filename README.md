@@ -6,9 +6,9 @@ Res.js is a swiss army knife for responsive sites.
 Minified, Res.js comes in at 4kb making it the perfect compliment to your next project. Res.js is not dependant on jQuery or Zepto and is written in vanilla Javascript.
 
 
-Res.js is simple to include in your project. Res.js takes one argument, a JSON array of breakpoints. This makes it easy to include in an JSON formatted model you may already be using. 
+Res.js is simple to include in your project. Res.js takes one argument, a JSON array of breakpoints. This makes it easy to include in an JSON formatted model you may already be using.
 
-Each state has two required keys: name ("state") and breakpoint ("breakpoint").  If you wish to position elements via a Javascript based grid, you can also provide optional number of columns ("cols"), outer margin ("margin") and gutter ("gutter"). Res.js will calculate the position of columns and size of column spans for you. An example of setting multiple breakpoints and supplying the units needed to create a grid for each breakpoint is below. 
+Each state has two required keys: name ("state") and breakpoint ("breakpoint").  If you wish to position elements via a Javascript based grid, you can also provide optional number of columns ("cols"), outer margin ("margin") and gutter ("gutter"). Res.js will calculate the position of columns and size of column spans for you. An example of setting multiple breakpoints and supplying the units needed to create a grid for each breakpoint is below.
 
 ```
 
@@ -72,7 +72,7 @@ Once instantiated as an object, you can do things based on device type, input, o
 ```
 
 if( r.os === 'android' && r.device === 'tablet' && r.orient === 'landscape' ){
-	
+
 	// do something here for android tablets in landscape mode
 
 }
@@ -102,7 +102,7 @@ if(r.state === 'portrait'){
   that.width = r.grid.colSpan[4];
   that.x = r.grid.col[8];
 }
-  
+
 if(r.state === 'tablet'){
   that.width = r.grid.colSpan[6];
   that.x = r.grid.col[6];
@@ -118,6 +118,10 @@ Fork the repo and fire up index.html on your local development server. Type "r" 
 
 Sumbit issues in the issue tracker, fork the repo and make a pull request to add a feature.
 
+v 1.3 -----
+
+Added support for Edge browser.
+Fixed an issue that would prevent validating IE11 and Opera User Agent.
 
 v.125 -----
 
