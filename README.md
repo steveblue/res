@@ -120,15 +120,15 @@ Sumbit issues in the issue tracker, fork the repo and make a pull request to add
 
 v 1.3 -----
 
-Added support for Edge browser.
-Fixed an issue that would prevent validating IE11 and Opera User Agent.
+- Added support for Edge browser.
+- Fixed an issue that would prevent validating IE11 and Opera User Agent.
 
 v.125 -----
 
-Added dynamic state creation.
-Changed format of model to JSON.
-Implemented an optional grid system on the window.
+- Added dynamic state creation.
+- Changed format of model to JSON.
+- Implemented an optional grid system on the window.
 
 v.1.1 -----
 
-Dispatched an Event on the window on StateChange.
+- Dispatched an Event on the window on StateChange.
